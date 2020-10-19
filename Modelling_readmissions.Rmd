@@ -1,0 +1,131 @@
+---
+title: "Modelling Readmission in HED"
+subtitle: "using R"
+author: "Chris Mainey"
+date: "2020/10/19 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: HED.css
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false
+
+---
+class: title-slide
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.width=10, fig.height=6, fig.align = "center", dpi=300,
+                      dev.args = list(png = list(type = "cairo")), fig.retina=3) 
+library(Cairo)
+```
+
+<br><br><br>
+
+# Adopting `R` in an NHS informatics department
+
+<br><br>
+
+.pull-left[
+__Chris Mainey__
+<p style="font-size:26;">Senior Data Scientist<br>
+<b>University Hospitals Birmingham 
+NHS FT</b></p>
+<br>
+<span style="font-size:26;">[chris.mainey@uhb.nhs.uk](mailto:chris.mainey@uhb.nhs.uk)</span><br>
+`r icon::fa("twitter", color=rgb(148, 198, 0, maxColorValue = 255))` <a href="https://twitter.com/chrismainey?s=09" style="line-height:2;">@chrismainey</a>
+]
+
+.pull-right[
+<img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/HI.png" width=75% height=75%>
+<br><br>
+<img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/logo.png" width=70% height=70%>
+]
+
+---
+
+# Healthcare Evaluation Data (HED)
+
+
+<a href="https://www.hed.nhs.uk">www.hed.nhs.uk </a>
+
+
+.pull-left[
+- Online hospital benchmarking system
+- Statistical models and analysis tools
+- Activity, Mortality, Re-admissions, Length-of-Stay, Market-share etc.
+- Used by ~60 NHS and other organisations
+- Training and support
+<br><br>
+- __Using national NHS data__
+]
+.pull-right[
+<br>
+<img src="https://chrismainey.github.io/EARL_2019_presentation/assets/HED_system.png">
+]
+
+---
+
+# Casemix-adjusted indicators
+
+__Leading question:__ _How can we compare indicators like readmission or mortality across units?_
+<br>
+
++ Different patients at different levels of risk.
+
+--
+
++ Aggregated data can also lead to different size 'bins'
+
+--
+
++ Conceivable that different mixed due to factors like:
+ + Age profiles
+ + Elective / Non-elective balance
+ + Types of services at sites
+ + Seasonality
+
+--
+
++ Important to understand biases associated with (and without) adjustment
+
+---
+
+# Performing casemix adjustment
+
++ Various ways, but we focus on __indirectly-standardised ratios__
+
+--
+
++ Adjust all to the expected average risks
+
+--
+
++ Use a regression model to predict risk.
+
+--
+
++ Relative risk ratio is then:
+
+$$ \frac{\sum{events}}{\sum{risk}}$$
++ We can then predict a risk score from patient demographics and admission details.
+
+---
+
+# Key assumptions
+
+
+
+---
+
+# Case-study
+## Relative-Risk Readmission Ratio
+
+Readmission to any acute provider within 30-days of discharge from another provider.
+
++ 
+
+---
