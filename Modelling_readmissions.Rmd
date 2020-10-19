@@ -18,9 +18,38 @@ class: title-slide
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(fig.width=10, fig.height=6, fig.align = "center", dpi=300,
-                      dev.args = list(png = list(type = "cairo")), fig.retina=3) 
+knitr::opts_chunk$set(
+  fig.height=6
+  , fig.width=10
+  , fig.align = "center"
+	, dev.args = list(png = list(type = "cairo"))
+)
+ 
 library(Cairo)
+library(tidyverse)
+
+theme_set(
+  theme_minimal()+
+  theme(text = element_text(family = "Open Sans"))
+)
+
+
+set.seed(123)
+X <- c(runif(50, 0, 5), 0)
+Y <- 2 + (1.5 * X[1:50]) + rnorm(50, 0, 0.5)
+Y[51] <- 2
+my_data <- data.frame(X, Y)
+rm(list = c('X','Y'))
+X <- c(2,3,3)
+Y <- 2 + (1.5 * X)
+Y[2] <- Y[1]
+Y[3] <- Y[3] +0.05
+dt2 <- data.frame(X, Y)
+rm(list = c('X','Y'))
+triangle<- data.frame(X=c(2.5, 3.2, 0),
+Y = c(4.5, 5.8, 2.9), 
+value=c("1", "1.5", "2"),
+label= c("1", "\u03B2", "\u03B1" ))
 ```
 
 <br><br><br>
@@ -41,8 +70,8 @@ NHS FT</b></p>
 
 .pull-right[
 <img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/HI.png" width=75% height=75%>
-<br><br>
-<img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/logo.png" width=70% height=70%>
+<br>
+<img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/logo.png" width=65% height=65%>
 ]
 
 ---
@@ -132,20 +161,186 @@ Readmission to any acute provider within 30-days of discharge from another provi
 ---
 
 # Non linear data:
-## Genrealised additive Model
 
+```{r sig, echo=FALSE, message=TRUE, warning=FALSE}
+### Sigmoid function ### create a function to generate sigmoid pattern
+sigmoid <- function(x, lower_asymptote, carrying_capacity, growth_rate, time_max) {
+  return(lower_asymptote + ((carrying_capacity - lower_asymptote)/(1 + exp(-growth_rate * 
+                                                                             (x - time_max)))))
+}
+X <- 1:100
+X <- c(X, X+rnorm(X,X,2), X+rnorm(X, X, 5))
+Y <- sigmoid(1:100, 1, 50, 0.2, 50) + rnorm(100, 0, 5)
+Y <- c(Y, Y+rnorm(Y, Y, 3), Y+rnorm(Y, Y, 8))
+dt<-data.frame(X,Y)
+dt$cat<-factor(ifelse(dt$X<50, "a", ifelse(dt$X <150, "b", "c")))
+dt$cat_pred<-predict(lm(dt$Y ~ dt$cat))
+
+
+ggplot(dt, aes(y=Y, x=X))+
+  geom_point(size=1.5, alpha=0.4)+
+  theme(axis.title.y = element_text(vjust = 0.5,angle=0))
+
+```
+
+
+---
+
+# What about nonlinear data? (2)
+
+```{r cats, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6.5}
+ggplot(dt, aes(y=Y, x=X))+
+  geom_point(size=1.8, alpha=0.4)+
+  geom_smooth(aes(col="A"), method = "lm",  se=FALSE, size=1.3)+
+  #geom_line(aes(y=cat_pred, col="B"),  size=1.3)+
+  #geom_smooth(aes(col="C"), method = "lm", formula= y~poly(x, 3),  se=FALSE, size=1.3)+
+  scale_color_manual(values = c("#5DDEDE", "#FAD74B" ,"#FA6767"),
+                     labels= factor(x=c("A", "B", "C"), levels=c("A", "B", "C"), labels=c("Linear", "Categorical", "Polynomial"), ordered=TRUE)
+                     , name="Type of fit")+
+  #ggtitle("Varying approximations for non-linear relationships")+
+  theme(legend.position = "bottom",
+        legend.title = element_text(face="bold", size=10),
+        legend.text = element_text(size=9),
+        plot.title = element_text(size = 12, face="bold") )
+```
+---
+
+# What about nonlinear data? (3)
+
+```{r cats3, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6.5}
+ggplot(dt, aes(y=Y, x=X))+
+  geom_point(size=1.8, alpha=0.4)+
+  #geom_smooth(aes(col="A"), method = "lm",  se=FALSE, size=1.3)+
+  geom_line(aes(y=cat_pred, col="B"),  size=1.3)+
+  #geom_smooth(aes(col="C"), method = "lm", formula= y~poly(x, 3),  se=FALSE, size=1.3)+
+  scale_color_manual(values = c("#FAD74B" ,"#FA6767"),
+                     labels= factor(x=c("B", "C"), levels=c("B", "C"), labels=c("Categorical", "Polynomial"), ordered=TRUE)
+                     , name="Type of fit")+
+  #ggtitle("Varying approximations for non-linear relationships")+
+  theme(legend.position = "bottom",
+        legend.title = element_text(face="bold", size=10),
+        legend.text = element_text(size=9),
+        plot.title = element_text(size = 12, face="bold") )
+```
+---
+
+# What about nonlinear data? (4)
+
+```{r cats4, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6.5}
+ggplot(dt, aes(y=Y, x=X))+
+  geom_point(size=1.8, alpha=0.4)+
+  #geom_smooth(aes(col="A"), method = "lm",  se=FALSE, size=1.3)+
+  #geom_line(aes(y=cat_pred, col="B"),  size=1.3)+
+  geom_smooth(aes(col="C"), method = "lm", formula= y~poly(x, 3),  se=FALSE, size=1.3)+
+  scale_color_manual(values = c("#FA6767"),
+                     labels= factor(x=c("C"), levels=c("C"), labels=c("Polynomial"), ordered=TRUE)
+                     , name="Type of fit")+
+  #ggtitle("Varying approximations for non-linear relationships")+
+  theme(legend.position = "bottom",
+        legend.title = element_text(face="bold", size=10),
+        legend.text = element_text(size=9),
+        plot.title = element_text(size = 12, face="bold") )
+```
+---
+
+# What about nonlinear data? (5)
+
+```{r cats5, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6.5}
+ggplot(dt, aes(y=Y, x=X))+
+  geom_point(size=1.8, alpha=0.4)+
+  geom_smooth(aes(col="A"), method = "lm",  se=FALSE, size=1.3)+
+  geom_line(aes(y=cat_pred, col="B"),  size=1.3)+
+  geom_smooth(aes(col="C"), method = "lm", formula= y~poly(x, 3),  se=FALSE, size=1.3)+
+  scale_color_manual(values = c("#5DDEDE", "#FAD74B" ,"#FA6767"),
+                     labels= factor(x=c("A", "B", "C"), levels=c("A", "B", "C"), labels=c("Linear", "Categorical", "Polynomial"), ordered=TRUE)
+                     , name="Type of fit")+
+  #ggtitle("Varying approximations for non-linear relationships")+
+  theme(legend.position = "bottom",
+        legend.title = element_text(face="bold", size=10),
+        legend.text = element_text(size=9),
+        plot.title = element_text(size = 12, face="bold") )
+```
+
+---
+# GAMs + Splines
+
++ Smooth, piece-wise polynomials, like a flexible strip for drawing curves.
++ 'Knot points' between each section
++ Then ;Generalised Additive Model as regression on the sum of smoothers
+
+```{r gam1, echo=FALSE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+library(splines)
+ggplot(dt, aes(y=Y, x=X))+
+  geom_point(size=1.5, alpha=0.4)+
+  geom_smooth(aes(col="A"), method = "lm", formula = y~ns(x,10), se=FALSE, size=1.2, show.legend = FALSE)
+```
+
+
+---
+
+# GAMs in R
+
+Prof. Simon Wood's package is de-facto standard
+
+```{r gam}
+library(mgcv)
+my_gam <- gam(Y ~ s(X, bs="cr"), data=dt)
+```
+
++ `s()` control smoothers
++ `bs="cr"` telling it to use cubic regression spline ('basis')
++ Default is 10 knots (`k=10` argument), but you can alter this
+---
+
+# Model Output:
+```{r gam2}
+summary(my_gam)
+```
 
 ---
 
 # Clustering
 ## 'Random effects'
 
----
-# Parameter selection
 
 
 ---
 
 # ...but HES is pretty big, right?
 
+YES!  Yes it is, so required special handling;
+
++ Memory efficiency and speed - `data.table` package
++ Only load section required for each model:
+ + Use database (SQL Server) for what it's designed for!
+ + Stratified by each HRG4 sub-chapter
+ + Sparse model matrix
++ Parallelisation - `doParrallel` - better on Linux, speaking of which:
++ Linux! - Set up a VM on server, RStudio Server.
+
 ---
+
+# Making it happen
+
+Didn't happen over night!
+
++ Organisation move slowly
++ Your enthusiasm is a good start, but it's not the end
++ Don't assume others can see the benefits
+ + Technical talk is intimidating if you are not part of it!
+ + Sell benefits
+ + Work out timescale and costs (time, as much as financial)
+
+---
+
+# Journey in HED
+
++ HED used SAS for many years to build regression models.
++ CM had PhD project funded by UHB that allowed space to learn `R`
++ CM was useless for the first 18-months!
++ Then translated 'broken' SAS models to `R`
++ Initially CM's (reasonable scripts)
++ Not sustainable: couldn't pass to other analysts, not fault tolerant, no metadata
++ Built R package - MB primarily translate scripts
++ Package build encouraged use of Git source control
++ Model managemnt database, powered by functions in `R` package
