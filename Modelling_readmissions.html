@@ -19,7 +19,7 @@ class: title-slide
 
 &lt;br&gt;&lt;br&gt;&lt;br&gt;
 
-# Adopting `R` in an NHS informatics department
+# Modelling HES data in R: Readmissions
 
 &lt;br&gt;&lt;br&gt;
 
@@ -237,6 +237,68 @@ summary(my_gam)
 
 
 
+Lets image when have a big cloud of data points: 
+
+&lt;img src="Modelling_readmissions_files/figure-html/rint1-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Random effects (2)
+
+If we assume all points are independent, the previous model was fine, but...
+
+&lt;img src="Modelling_readmissions_files/figure-html/rint2-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Random effects (3)
+
+If we assume all points are independent, the previous model was fine, but...
+
+&lt;img src="Modelling_readmissions_files/figure-html/rint3-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Random effects (4)
+
+So we end up with a 'random-intercept' model:
+
+
+```r
+library(lme4)
+my_ri_model&lt;-lmer(y~x+(1|clust), data=dfc)
+
+summary(my_ri_model)
+```
+
+```
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: y ~ x + (1 | clust)
+##    Data: dfc
+## 
+## REML criterion at convergence: 3955.8
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -2.73388 -0.79825  0.01282  0.83659  2.80617 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  clust    (Intercept) 2651.3   51.49   
+##  Residual              151.1   12.29   
+## Number of obs: 500, groups:  clust, 5
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  43.4078    23.0788   1.881
+## x            51.3188     0.2839 180.796
+## 
+## Correlation of Fixed Effects:
+##   (Intr)
+## x -0.062
+```
+
+
 ---
 
 # ...but HES is pretty big, right?
@@ -248,8 +310,9 @@ YES!  Yes it is, so required special handling;
  + Use database (SQL Server) for what it's designed for!
  + Stratified by each HRG4 sub-chapter
  + Sparse model matrix
-+ Parallelisation - `doParrallel` - better on Linux, speaking of which:
++ Parallelisation - `doParallel` - better on Linux, speaking of which:
 + Linux! - Set up a VM on server, RStudio Server.
++ Optimised functions, like `bam()` in `mgcv`
 
 ---
 

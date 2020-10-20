@@ -27,6 +27,7 @@ knitr::opts_chunk$set(
  
 library(Cairo)
 library(tidyverse)
+library(metallicaRt)
 
 theme_set(
   theme_minimal()+
@@ -54,7 +55,7 @@ label= c("1", "\u03B2", "\u03B1" ))
 
 <br><br><br>
 
-# Adopting `R` in an NHS informatics department
+# Modelling HES data in R: Readmissions
 
 <br><br>
 
@@ -302,6 +303,82 @@ summary(my_gam)
 # Clustering
 ## 'Random effects'
 
+```{r setuprint, echo=FALSE, message = FALSE,	warning = FALSE, include = FALSE}
+set.seed(123)
+dfc<-data.frame(
+  clust=as.factor(replicate(n = 100, c("A", "B","C", "D", "E"))),
+  x=rnorm(500,mean = 5, sd= 2))
+  
+dfc$y1<- dfc$x+ jitter(50 * dfc$x, amount = 20)
+dfc$y<- dfc$y1 + jitter(as.numeric(dfc$clust))^3
+
+library(lme4)
+ri<-lmer(y~x+(1|clust), data=dfc)
+fe<-lm(y~x, data=dfc)
+fe2<-glm(y~x, data=dfc, family="gaussian")
+
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+
+res<-get_model_data(ri, type="re")[c(5,1)]
+z<-data.frame(as.factor(rownames(coef(ri)[[1]])), coef(ri)[[1]], alpha= 49.88)
+names(z) <- c("cluster", "rint","int","slope")
+z$newint <- res$estimate + z$int
+```
+
+Lets image when have a big cloud of data points: 
+
+```{r rint1, echo=FALSE}
+ggplot(dfc, aes(x=x,y=y))+
+  geom_point()+
+  stat_smooth(method=lm, formula = y~x, col="red")+
+  ggtitle("Scatter plot of made-up example, with Y predicted by X")
+```
+
+---
+
+# Random effects (2)
+
+If we assume all points are independent, the previous model was fine, but...
+
+```{r rint2, echo=FALSE}
+ggplot(dfc, aes(x=x,y=y))+
+  geom_point(aes(col=clust))+
+  stat_smooth(method=lm, formula = y~x, col="red") +
+  scale_colour_viridis_d(alpha=0.8)+
+  ggtitle("...what if the data are repeated measures from clusters")+
+  labs(color='Cluster')
+```
+
+---
+
+# Random effects (3)
+
+If we assume all points are independent, the previous model was fine, but...
+
+```{r rint3, echo=FALSE}
+ggplot(dfc, aes(x=x,y=y))+
+  geom_point(aes(col=clust))+
+  geom_abline(aes(intercept=newint, slope=slope, col=cluster), lwd=1, data=z)+
+  stat_smooth(method=lm, formula = y~x, col="red") +
+  scale_colour_viridis_d(alpha=0.8)+
+  ggtitle("Random-intercepts for clusters")+
+  labs(color='Cluster')
+```
+
+---
+
+# Random effects (4)
+
+So we end up with a 'random-intercept' model:
+
+```{r rintmod}
+library(lme4)
+my_ri_model<-lmer(y~x+(1|clust), data=dfc)
+
+summary(my_ri_model)
+```
 
 
 ---
@@ -315,8 +392,9 @@ YES!  Yes it is, so required special handling;
  + Use database (SQL Server) for what it's designed for!
  + Stratified by each HRG4 sub-chapter
  + Sparse model matrix
-+ Parallelisation - `doParrallel` - better on Linux, speaking of which:
++ Parallelisation - `doParallel` - better on Linux, speaking of which:
 + Linux! - Set up a VM on server, RStudio Server.
++ Optimised functions, like `bam()` in `mgcv`
 
 ---
 
