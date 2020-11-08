@@ -90,16 +90,17 @@ NHS FT</b></p>
 - Online hospital benchmarking system
 - Statistical models and analysis tools
 - Activity, Mortality, Re-admissions, Length-of-Stay, Market-share etc.
-- Run by University Hospitals Birmingham NHS FT
+- Built by Informatics team at University Hospitals Birmingham NHS Foundation Trust
 - Used by ~60 NHS and other organisations
-- Training and support
+- Training and support, including `R`
 <br><br>
 - __Using national NHS data, including HES, ONS mortality, central returns, NRLS and others__
 ]
 .pull-right[
 <br>
-<img src="https://chrismainey.github.io/EARL_2019_presentation/assets/HED_system.png">
+<img src="https://chrismainey.github.io/EARL_2019_presentation/assets/HED_system.png" width=110%>
 ]
+
 
 ---
 
@@ -281,7 +282,7 @@ ggplot(dt, aes(y=Y, x=X))+
 
 + Smooth, piece-wise polynomials, like a flexible strip for drawing curves.
 + 'Knot points' between each section
-+ Then ;Generalised Additive Model as regression on the sum of smoothers
++ Then Generalised Additive Model as regression on the sum of smoothers
 
 ```{r gam1, echo=FALSE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 library(splines)
