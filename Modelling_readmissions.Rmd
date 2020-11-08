@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
  
 library(Cairo)
 library(tidyverse)
-library(metallicaRt)
+#library(metallicaRt)
 
 theme_set(
   theme_minimal()+
