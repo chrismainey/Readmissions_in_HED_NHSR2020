@@ -65,8 +65,9 @@ hed-slide{
 /* Styles for Title Slide */
 
 .title-slide hgroup > h1{
-  font-family: 'Open Sans','Robot', sans-serif;
-  color: #706F6F";
+  font-family: 'Open Sans','Roboto', sans-serif;
+  color: #706F6F;
+  text-align: center;
 }
 
 .title-slide hgroup > h2{

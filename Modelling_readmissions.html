@@ -10,6 +10,7 @@
   <body>
     <textarea id="source">
 
+
 class: title-slide
 
 
@@ -90,54 +91,66 @@ __Leading question:__ _How can we compare indicators like readmissions or mortal
 
 ---
 
-# Performing casemix adjustment
+# Indirectly-standardised ratio
 
-+ Various ways, but we focus on __indirectly-standardised ratios__
-
---
-
-+ Adjust all to the expected average risks
+___Adjust all to the expected average risks for predictors___
 
 --
 
-+ Commonly use a regression model to predict risk.
++ Commonly use a regression model to estimate effects of predictors.
+
++ Our model can then be used to predict the risk of event for each patient.
 
 --
 
-+ Relative risk ratio is then:
++ We can compare out predicted risks to events we are observing as a __Relative risk ratio__:
 
 $$ \frac{\sum{events}}{\sum{risk}}$$
-+ We can then predict a risk score from patient demographics and admission details.
+
++ Compare our relative risk ratio to the standard (usually 1, or multiples like 100)
+
 
 ---
 
-## Case-study
-### Relative-Risk Readmission Ratio
-
-Readmission to any acute provider within 30-days of discharge from another. Indexed to dishcarge form the first organisation.
+## Case-study: Relative-Risk Readmission 
+&lt;br&gt;
+___Readmission to any acute provider within 30-days of discharge from another. Indexed to discharge from the first organisation.___
 
 --
 
+&lt;br&gt;
+
+.pull-left[
 + Major variables relate to age, sex, admission method, diagnosis, comorbid conditions.
+{{content}}
+
+]
+
 
 --
 
 + How we parametrise these variables affects quality of model.
- + E.g. Age as continuous?  Assumes affects of age constant.
+ + E.g. Age as continuous?  Assumes effects of age are constant.
  + What if it's not? Binning or transformations?
 
 --
 
-+ Regression assumes all points are independent, this is not true here:
+.pull-right[
++ Regression assumes all points are independent, __this is not true here:__
  + Patients at hospital X more like 'hospital X' patient than 'average patient'
  + Clustering
+]
 
 ---
+class: middle
 
 # Non-linear data:
 What if the relationship between X and Y varies across the range?
 
 ---
+
+# What about nonlinear data? (1)
+
 
 &lt;img src="Modelling_readmissions_files/figure-html/sig-1.png" style="display: block; margin: auto;" /&gt;
 
