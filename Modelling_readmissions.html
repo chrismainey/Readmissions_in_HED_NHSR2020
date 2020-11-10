@@ -32,9 +32,9 @@ NHS FT&lt;/b&gt;&lt;/p&gt;
 ]
 
 .pull-right[
-&lt;img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/logo.png" width=50% height=50%&gt;
+&lt;img src= "https://chrismainey.github.io/Readmissions_in_HED_NHSR2020/assets/logo.png" width=50% height=50%&gt;
 &lt;br&gt;
-&lt;img src= "https://chrismainey.github.io/EARL_2019_presentation/assets/HI.png" width=62% height=62%&gt;
+&lt;img src= "https://chrismainey.github.io/Readmissions_in_HED_NHSR2020/assets/HI.png" width=62% height=62%&gt;
 &lt;br&gt;
 &lt;img src= "https://www.uhb.nhs.uk/Images/uhb-logo-2017.png" width=58% height=58% style="border:10px solid #FFFFFF;"&gt;
 
@@ -132,6 +132,9 @@ $$ \frac{\sum{events}}{\sum{risk}}$$
 
 
 .pull-left[
+
+&lt;br&gt;
+
 + Major variables relate to age, sex, admission method, diagnosis, comorbid conditions.
 {{content}}
 
@@ -140,6 +143,8 @@ $$ \frac{\sum{events}}{\sum{risk}}$$
 
 --
 
+&lt;br&gt;
+
 + How we parametrise these variables affects quality of model.
  + E.g. Age as continuous?  Assumes effects of age are constant.
  + What if it's not? Binning or transformations?
@@ -147,6 +152,8 @@ $$ \frac{\sum{events}}{\sum{risk}}$$
 --
 
 .pull-right[
+&lt;br&gt;&lt;br&gt;
+
 + Regression assumes all points are independent, __this is not true here:__
  + Patients at hospital X more like 'hospital X' patient than 'average patient'
  + Clustering
@@ -181,11 +188,6 @@ What if the relationship between X and Y varies across the range?
 # What about nonlinear data? (4)
 
 &lt;img src="Modelling_readmissions_files/figure-html/cats4-1.png" width="80%" style="display: block; margin: auto;" /&gt;
----
-
-# What about nonlinear data? (5)
-
-&lt;img src="Modelling_readmissions_files/figure-html/cats5-1.png" width="80%" style="display: block; margin: auto;" /&gt;
 
 ---
 # GAMs + Splines
@@ -193,19 +195,21 @@ What if the relationship between X and Y varies across the range?
 .pull-left[
 
 + Smooth, piece-wise polynomials, like a flexible strip for drawing curves.
-&lt;br&gt;
+&lt;br&gt;&lt;br&gt;
 + Joined at 'Knot points' between each section
-&lt;br&gt;
+&lt;br&gt;&lt;br&gt;
 + This can then be a Generalised Additive Model
-&lt;br&gt;
+&lt;br&gt;&lt;br&gt;
 + Essentially: a regression on the sum of smoothers
+&lt;br&gt;&lt;br&gt;
 
 `$$y= \alpha + f(x) + \epsilon$$`
 
 ]
 
 .pull-right[
-&lt;img src="Modelling_readmissions_files/figure-html/gam1-1.png" width="80%" /&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;img src="Modelling_readmissions_files/figure-html/gam1-1.png" width="500px" /&gt;
 ]
 
 ---
@@ -219,10 +223,12 @@ Prof. Simon Wood's package is de-facto standard
 library(mgcv)
 my_gam &lt;- gam(Y ~ s(X, bs="cr"), data=dt)
 ```
-
+&lt;br&gt;
 + `s()` control smoothers
+&lt;br&gt;&lt;br&gt;
 + `bs="cr"` telling it to use cubic regression spline ('basis')
-+ Default is 10 knots (`k=10` argument), but you can alter this
+&lt;br&gt;&lt;br&gt;
++ Knots (or equivalent) are set by `k` argument, e.g. `k=10`
 ---
 
 # Model Output:
@@ -330,9 +336,17 @@ summary(my_ri_model)
 
 ---
 
+# How do we use it?
+
+Web-based, interactive 'modules' that users can interrogate:
+
+&lt;img src= "https://github.com/chrismainey/Readmissions_in_HED_NHSR2020/raw/master/assets/Module.png" width=90% height=90% class="center"&gt;
+
+
+---
 # ...but HES is pretty big, right?
 
-YES!  Yes it is, so required special handling;
+YES!  Yes it is, so required special handling:
 
 + Memory efficiency and speed - `data.table` package
 
@@ -371,11 +385,11 @@ YES!  Yes it is, so required special handling;
 
 --
 
-+ Then translated 'broken' SAS models to `R`
++ Then started translating 'broken' SAS models to `R`
 
 --
 
-+ Initially CM's (reasonable scripts)
++ Initially used CM's (annotated scripts)
 
 --
 
@@ -383,11 +397,11 @@ YES!  Yes it is, so required special handling;
 
 --
 
-+ Built R package - MB primarily translated scripts
++ Built `R` package - MB primarily translated scripts
 
 --
 
-+ R package building encouraged use of Git source control
++ `R` package building encouraged use of Git source control
 
 --
 
@@ -397,6 +411,18 @@ YES!  Yes it is, so required special handling;
 ---
 
 # Summary
+
++ R is a powerful tool for building case-mix adjustment models
++ Important to understand your data generation mechanism before modelling
++ Regression approach, common in indirect standardisation, have assumptions
++ When modelling hospital readmissions for HED:
+ + Specific modelling of non-linear relationship increased fit, using `gam()`
+ + Clustering affects in data, modelled using random intercepts
+ 
++ When building methods, remember is it is marathon, not a sprint
++ Use `R` in it's right place in the pipeline
++ Efficient handling is essential
++ Buidling `R` packages and using source control has been great help
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
