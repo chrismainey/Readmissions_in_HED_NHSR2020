@@ -29,7 +29,7 @@ div {
 }
 
 .MathJax {
-font-size: 1.3em;
+font-size: 2em;
 }
 
 
@@ -133,7 +133,10 @@ ul, menu, dir {
 }
 
 
-
+blockquote {
+  background-color: #E8E8E8;
+  color: #000000;
+}
 
 
 /**********/
