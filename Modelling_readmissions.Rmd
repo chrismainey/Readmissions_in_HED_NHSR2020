@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
   , fig.height = 6
   , dpi = 300
   #, dev ='CairoPNG'
-  #, dev.args = list(type = "cairo")
+  , dev.args = list(type = "cairo")
   , fig.align = "center"
   #, fig.retina = 3
   , out.width="80%"
