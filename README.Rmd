@@ -1,0 +1,28 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Readmissions in HED 
+## NHS-R Community Conference 2020
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This repository holds my presentation for NHS-R Community Conference 2020, talking about case-mix adjustment, splines and generalised additive models, random-intercept model and a little of how they've been used in HED.
+
+
+For more information, or support, contact [HED@uhb.nhs.uk](mailto:HED@uhb.nhs.uk) or [chris.mainey@uhb.nhs.uk](mailto:chris.mainey@uhb.nhs.uk)
+
+__&copy; Healthcare Evaluation Data (HED)__ - part of Health Informatics, University Hospitals Birmingham NHS Foundation Trust.  __All rights reserved.__
+
+<img src='./assets/HI.png' align="left">
+<img src='./assets/logo.png' align="right">
