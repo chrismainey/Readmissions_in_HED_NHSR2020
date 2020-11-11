@@ -38,7 +38,6 @@ knitr::opts_chunk$set(
  
 library(Cairo)
 library(tidyverse)
-#library(metallicaRt)
 
 theme_set(
   theme_bw()+
@@ -383,12 +382,12 @@ names(z) <- c("cluster", "rint","int","slope")
 z$newint <- res$estimate + z$int
 ```
 
-Lets image when have a big cloud of data points: 
+Lets imagine we have a big cloud of data points that look like this: 
 
 ```{r rint1, echo=FALSE}
 ggplot(dfc, aes(x=x,y=y))+
   geom_point()+
-  stat_smooth(method=lm, formula = y~x, col="red")+
+  stat_smooth(method=lm, formula = y~x, col="red") +
   ggtitle("Scatter plot of made-up example, with Y predicted by X")
 ```
 
@@ -528,4 +527,4 @@ YES!  Yes it is, so required special handling:
 + When building methods, remember is it is marathon, not a sprint
 + Use `R` in it's right place in the pipeline
 + Efficient handling is essential
-+ Buidling `R` packages and using source control has been great help
++ Building `R` packages and using source control has been great help
