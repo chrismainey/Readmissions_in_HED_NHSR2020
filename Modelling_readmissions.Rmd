@@ -63,12 +63,12 @@ value=c("1", "1.5", "2"),
 label= c("1", "\u03B2", "\u03B1" ))
 ```
 
-<br><br><br>
+<br><br>
 
 # Building predictive models with HES data
 ## Readmissions in HED
-
-<br>
+https://github.com/chrismainey/Readmissions_in_HED_NHSR2020
+<br><br>
 
 .pull-left[
 __Chris Mainey__
