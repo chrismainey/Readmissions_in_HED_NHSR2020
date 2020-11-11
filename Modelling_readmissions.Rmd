@@ -65,9 +65,10 @@ label= c("1", "\u03B2", "\u03B1" ))
 
 <br><br><br>
 
-# Modelling HES data in R: Readmissions
+# Building predictive models with HES data
+## Readmissions in HED
 
-<br><br>
+<br>
 
 .pull-left[
 __Chris Mainey__
@@ -522,7 +523,7 @@ YES!  Yes it is, so required special handling:
 + Regression approach, common in indirect standardisation, have assumptions
 + When modelling hospital readmissions for HED:
  + Specific modelling of non-linear relationship increased fit, using `gam()`
- + Clustering affects in data, modelled using random intercepts
+ + If clustering affects your data, random-intercepts may be helpful
  
 + When building methods, remember is it is marathon, not a sprint
 + Use `R` in it's right place in the pipeline
